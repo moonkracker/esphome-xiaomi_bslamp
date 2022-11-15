@@ -84,14 +84,14 @@ light:
           update_interval: 3s
       - lambda:
           name: Breathing Red
-          update_interval: 50ms
+          update_interval: 16s
           lambda: |-
             #define RED 1.0,0.0,0.0
             static int state = 0;
             auto call = id(my_light).turn_on();
             call.set_transition_length(15000);
             if (state == 0) 
-              call.set_brightness(0.01);
+              call.set_brightness(0.02);
             
             else if (state == 1) {
               call.set_rgb(RED); 
