@@ -362,8 +362,8 @@ light:
         warm:        { color_temperature: 588 mireds      }
       color_effects:
         breathing_red: { effect: Breathing Red            }
-        christmas:     { effect: Christmas                }
-
+        chill:         { effect: Chill Mode               }
+        breathing_rgb: { effect: RGB Breathing            }
 # Binary sensors can be created for handling front panel touch / release
 # events. To specify what part of the front panel to look at, the "for"
 # parameter can be set to: "POWER_BUTTON", "COLOR_BUTTON" or "SLIDER".
