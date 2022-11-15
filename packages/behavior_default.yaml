@@ -86,28 +86,23 @@ light:
           name: Breathing Red
           update_interval: 50ms
           lambda: |-
-            static int steps = 0;
-            const int steps_limit = 80;
-            float brightness;
-        
-            auto call = id(my_light).turn_on();
-            call.set_rgb(1.0,0.0,0.0);
-      
-            brightness = (float)steps / ((float)steps_limit / 2.0f);
-            
-            steps = steps + 1;
-            steps = steps % steps_limit; 
-            
-            if(brightness > 1.0f){
-              brightness = 1.0f - (brightness - 1.0f );
+            #define RED 1.0, 0.0, 0.0
+            static int state = 0;
+            static int color = 1;
+            auto call = id(frontfan).turn_on(); //put the id for your light in here
+            call.set_transition_length(15000);
+            if (state == 0) 
+              call.set_brightness(0.01);
+            else if (state == 1) {
+              call.set_rgb(RED); 
+              call.set_brightness(1.0);
             }
+
+            state ++;
+            if (state == 2)
+              state = 0;
             
-            call.set_brightness(brightness);
-            call.set_white(0.0);
-            call.set_transition_length(0);
             call.perform();
-            
-            
 
     # You can define one or more groups of presets. These presets can
     # be activated using various "preset.activate" action options.
@@ -129,6 +124,8 @@ light:
         chilly:      { color_temperature: 275 mireds      }
         luke:        { color_temperature: 400 mireds      }
         warm:        { color_temperature: 588 mireds      }
+      color_effects:
+        breathing_red: { effect: Breathing Red            }
 
 # Binary sensors can be created for handling front panel touch / release
 # events. To specify what part of the front panel to look at, the "for"
