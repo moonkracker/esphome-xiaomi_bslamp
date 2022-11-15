@@ -103,6 +103,26 @@ light:
               state = 0;
             
             call.perform();
+      - lambda:
+          name: Christmas
+          update_interval: 16s #Finetune to your liking with the transition lenght below
+          lambda: |-
+            typedef struct { uint32_t transition_length; float brightness; float R,G,B; } stage_t;
+            const stage_t Stages[] = {
+            // Transition, Brightness, R, G, B
+            { 15000, 0.01, 1.0, 0.0, 0.0 },
+            { 15000, 1.0, 1.0, 0.0, 0.0 },
+            { 15000, 0.01, 0.0, 1.0, 0.0 },
+            { 15000, 1.0, 0.0, 1.0, 0.0 }
+            };
+            const int StageCount = sizeof(Stages)/sizeof(Stages[0]);
+            static int stage = 0;
+            auto call = id(my_light).turn_on();
+            call.set_transition_length(Stages[stage].transition_length);
+            call.set_brightness(Stages[stage].brightness);
+            call.set_rgb(Stages[stage].R, Stages[stage].G, Stages[stage].B);
+            call.perform();
+            if ((stage+1) >= StageCount) stage = 0;
 
     # You can define one or more groups of presets. These presets can
     # be activated using various "preset.activate" action options.
@@ -126,6 +146,7 @@ light:
         warm:        { color_temperature: 588 mireds      }
       color_effects:
         breathing_red: { effect: Breathing Red            }
+        christmas:     { effect: Christmas                }
 
 # Binary sensors can be created for handling front panel touch / release
 # events. To specify what part of the front panel to look at, the "for"
