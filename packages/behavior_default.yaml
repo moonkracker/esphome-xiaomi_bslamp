@@ -95,7 +95,8 @@ light:
       
             brightness = (float)steps / ((float)steps_limit / 2.0f);
             
-            steps = ++steps % steps_limit; 
+            steps = steps++:
+            steps = steps % steps_limit; 
             
             if(brightness > 1.0f){
               brightness = 1.0f - (brightness - 1.0f );
