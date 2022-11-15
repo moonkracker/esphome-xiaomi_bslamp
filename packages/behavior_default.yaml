@@ -86,13 +86,13 @@ light:
           name: Breathing Red
           update_interval: 50ms
           lambda: |-
-            #define RED 1.0, 0.0, 0.0
+            #define RED 1.0,0.0,0.0
             static int state = 0;
-            static int color = 1;
-            auto call = id(frontfan).turn_on(); //put the id for your light in here
+            auto call = id(my_light).turn_on();
             call.set_transition_length(15000);
             if (state == 0) 
               call.set_brightness(0.01);
+            
             else if (state == 1) {
               call.set_rgb(RED); 
               call.set_brightness(1.0);
