@@ -86,17 +86,17 @@ light:
           name: Breathing Red
           update_interval: 50ms
           lambda: |-
-            static int step = 0;
+            static int steps = 0;
             const int step_limit = 80;
             float brightness;
         
             auto call = id(my_light).turn_on();
-            call.set_rgb(1,0,0);
+            call.set_rgb(1.0,0.0,0.0);
       
-            brightness = (float)step / ((float)step_limit / 2.0f);
+            brightness = (float)steps / ((float)step_limit / 2.0f);
       
             if(brightness > 1.0f){
-            	brightness = 1.0f - (brightness - 1.0f );
+              brightness = 1.0f - (brightness - 1.0f );
             }
       
             call.set_brightness(brightness);
