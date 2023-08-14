@@ -4,13 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [next release]
+## [2023.4.0]
+
+**Note**: This release requires ESPHome 2023.4.0 and Home Assistant 2023.2.0 or newer.
 
 ### Fixed
+- Compile issues with recent ESPHome versions fixed:
+  - An error about toolchain-riscv32-esp not being found (the PlatformIO tool manager
+    tries to install this one, even though the lamp is an ESP32 device and not riscv).
+  - On systems for which the above toolchain could be found, compilation would fail
+    with an error about `esp_mac.h` not being found.
+
+### Changed
 - ESPHome's compile-time warnings about "GPIO<x> is a Strapping PIN and should
   be avoided" are now being suppressed. These warning are often interpreted
   by users of this firmware as problems. However, the pinouts are dictated by
   the hardware and there are no strapping issues because of how they are used.
+- Updated the documentation for the deprecated API password support (which must now
+  be an API encryption key instead).
 
 ## [2022.12.0]
 
