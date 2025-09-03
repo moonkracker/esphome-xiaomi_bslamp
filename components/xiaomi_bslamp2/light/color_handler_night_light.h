@@ -37,8 +37,8 @@ class ColorHandlerNightLight : public ColorHandler {
     // Based on measurements using the original device firmware, so it
     // matches the night light of the original firmware.
     if (v.get_color_mode() == light::ColorMode::COLOR_TEMPERATURE) {
-      red = 0.968f;
-      green = 0.968f;
+      red = 0.960f;
+      green = 0.972f;
       blue = 0.972f;
       white = 0.0f;
     }
@@ -46,7 +46,7 @@ class ColorHandlerNightLight : public ColorHandler {
     // specific color, instead of the default. This is a nice extra for
     // this firmware, as the original firmware does not support it.
     else {
-      red = std::lerp(0.9997f, 0.9680f, v.get_red());
+      red = std::lerp(0.9997f, 0.960f, v.get_red());
       green = std::lerp(0.9997f, 0.9680f, v.get_green());
       auto blue_scale = (v.get_red() + v.get_green()) / 2.0f;
       auto blue_max = std::lerp(0.9640f, 0.9720f, blue_scale);
