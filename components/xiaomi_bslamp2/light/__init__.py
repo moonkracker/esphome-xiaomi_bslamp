@@ -16,6 +16,7 @@ from esphome.const import (
     CONF_BRIGHTNESS,
     CONF_EFFECT,
     CONF_FLASH_LENGTH,
+    CONF_RESTORE_MODE,
 )
 from .. import bslamp2_ns, CODEOWNERS, CONF_LIGHT_HAL_ID, LightHAL
 
@@ -93,6 +94,9 @@ CONFIG_SCHEMA = light.RGB_LIGHT_SCHEMA.extend(
         cv.GenerateID(CONF_ID): cv.declare_id(XiaomiBslamp2LightState),
         cv.GenerateID(CONF_LIGHT_HAL_ID): cv.use_id(LightHAL),
         cv.GenerateID(CONF_OUTPUT_ID): cv.declare_id(XiaomiBslamp2LightOutput),
+        cv.Optional(CONF_RESTORE_MODE, default="RESTORE_DEFAULT_OFF"): cv.enum(
+            light.RESTORE_MODES, upper=True, space="_"
+        ),
         cv.Optional(CONF_ON_BRIGHTNESS): automation.validate_automation(
             {
                 cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(BrightnessTrigger),
@@ -133,7 +137,12 @@ def maybe_simple_preset_action(schema):
     return validator
 
 
-@automation.register_action("light.disco_on", DiscoAction, light.automation.LIGHT_TURN_ON_ACTION_SCHEMA)
+@automation.register_action(
+    "light.disco_on",
+    DiscoAction,
+    light.automation.LIGHT_TURN_ON_ACTION_SCHEMA,
+    synchronous=True,
+)
 def disco_action_on_to_code(config, action_id, template_arg, args):
     light_var = yield cg.get_variable(config[CONF_ID])
     var = cg.new_Pvariable(action_id, template_arg, light_var)
@@ -168,12 +177,18 @@ def disco_action_on_to_code(config, action_id, template_arg, args):
     yield var
 
 
-@automation.register_action("light.disco_off", DiscoAction, light.automation.LIGHT_TURN_OFF_ACTION_SCHEMA)
-def disco_action_off_to_code(config, action_id, template_arg, args):
-    light_var = yield cg.get_variable(config[CONF_ID])
+@automation.register_action(
+    "light.disco_off",
+    DiscoAction,
+    light.automation.LIGHT_TURN_OFF_ACTION_SCHEMA,
+    synchronous=True,
+)
+async def disco_action_off_to_code(config, action_id, template_arg, args):
+    light_var = await cg.get_variable(config[CONF_ID])
     var = cg.new_Pvariable(action_id, template_arg, light_var)
-    cg.add(var.set_disco_state(False))
-    yield var
+    template_ = await cg.templatable(False, args, bool)
+    cg.add(var.set_disco_state(template_))
+    return var
 
 
 USED_PRESETS = []
@@ -212,6 +227,7 @@ def register_preset_action(value):
         ),
         register_preset_action,
     ),
+    synchronous=True,
 )
 def preset_activate_to_code(config, action_id, template_arg, args):
     presets_var = yield cg.get_variable(config[CONF_PRESETS_ID])
